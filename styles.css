@@ -1,0 +1,213 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #fbeaec, #ffe4e1); /* Soft gradient background */
+    margin: 0;
+    padding: 0;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Add Task Button */
+button {
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s ease-in-out;
+    align-items: left;
+}
+
+button:hover {
+    background: #218838;
+    transform: scale(1.05);
+}
+
+/* Kanban Board */
+.board {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px auto;
+    width: 90%;
+    gap: 20px;
+}
+
+/* Columns */
+.column {
+    width: 30%;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
+    transition: 0.3s ease-in-out;
+}
+
+.column:hover {
+    transform: translateY(-5px);
+}
+
+/* Column Headers */
+.column-header {
+    font-weight: bold;
+    padding: 12px;
+    color: white;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+/* Column Colors */
+#todo .column-header {
+    background: #00bfff;
+}
+
+#in-progress .column-header {
+    background: #00c3a3;
+}
+
+#done .column-header {
+    background: #7bdc31;
+}
+
+/* Task List */
+.tasks {
+    min-height: 250px;
+    border: 2px dashed #ddd;
+    padding: 12px;
+    border-radius: 8px;
+    background: white;
+    transition: 0.3s ease-in-out;
+}
+
+/* Task Item */
+.task {
+    background: #2196F3;
+    color: white;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    cursor: grab;
+    font-size: 16px;
+    transition: 0.2s ease-in-out;
+}
+
+.task:hover {
+    transform: scale(1.05);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Modal Content */
+.modal-content {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 20px;
+    margin: 15% auto;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: slideIn 0.3s ease-in-out;
+}
+
+/* Modal Title */
+.modal-content h3 {
+    margin-bottom: 12px;
+    font-size: 22px;
+    color: #333;
+}
+
+/* Modal Input */
+.modal-content input {
+    width: 90%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: 0.2s;
+}
+
+/* Modal Buttons */
+.modal-buttons {
+    margin-top: 15px;
+}
+
+.modal-buttons button {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+/* Modal Add Button */
+.modal-buttons button:first-child {
+    background: #28a745;
+    color: white;
+}
+
+.modal-buttons button:first-child:hover {
+    background: #218838;
+}
+
+/* Modal Cancel Button */
+.modal-buttons button:last-child {
+    background: #e74c3c;
+    color: white;
+    margin-left: 10px;
+}
+
+.modal-buttons button:last-child:hover {
+    background: #c0392b;
+}
+
+/* Animation for Modal */
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .board {
+        flex-direction: column;
+        align-items: center;
+    }
+    .column {
+        width: 90%;
+    }
+}
