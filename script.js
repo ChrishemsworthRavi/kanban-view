@@ -1,10 +1,11 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-import dotenv from "dotenv"; // Import dotenv package
 
-dotenv.config(); // Load environment variables
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const SUPABASE_URL = "https://dnbgjzscuxrlbceqsrhz.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuYmdqenNjdXhybGJjZXFzcmh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI4NDU1MTksImV4cCI6MjA1ODQyMTUxOX0.ZJ496AtjazuXkppkpEy-DnChkUdsAme4DQXBC4sNTsg"; // Replace with your actual Anon Key
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    console.error("Supabase environment variables are missing!");
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -12,12 +13,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 window.openModal = function() {
     document.getElementById("taskModal").style.display = "block";
     document.getElementById("taskInput").value = ""; // Clear input field
-}
+};
 
 // Close modal
 window.closeModal = function() {
     document.getElementById("taskModal").style.display = "none";
-}
+};
 
 // Enable dragging
 function drag(event) {
@@ -27,16 +28,15 @@ function drag(event) {
 // Allow dropping
 window.allowDrop = function(event) {
     event.preventDefault(); // Prevent default handling (to allow drop)
-}
+};
 
 window.drop = async function(event, status) {
     event.preventDefault();
     let taskId = event.dataTransfer.getData("text");
     let task = document.getElementById(taskId);
     
-    // Normalize status to match your container IDs
     let containerId;
-    switch(status) {
+    switch (status) {
         case "New":
             containerId = "todo-tasks";
             break;
@@ -51,9 +51,6 @@ window.drop = async function(event, status) {
             return;
     }
 
-    console.log(`Dropping task into: ${status}`);
-    console.log(`Looking for container: ${containerId}`);
-
     const taskContainer = document.getElementById(containerId);
     
     if (taskContainer) {
@@ -63,14 +60,12 @@ window.drop = async function(event, status) {
     } else {
         console.error(`Container with ID "${containerId}" not found.`);
     }
-}
-
-
+};
 
 // Add new task dynamically
 window.addTask = async function() {
     let taskText = document.getElementById("taskInput").value.trim();
-    if (taskText === "") return; // Prevent empty task
+    if (taskText === "") return;
 
     let { data, error } = await supabase
         .from("tasks")
@@ -83,16 +78,14 @@ window.addTask = async function() {
     }
 
     let taskId = "task-" + data[0].id;
-    createTaskElement(taskId, taskText, "New"); // Use "New" for initial status
+    createTaskElement(taskId, taskText, "New");
     closeModal();
     updateCounts();
-}
+};
 
 // Create and append task element
 function createTaskElement(taskId, taskText, status) {
-    let taskContainer; // Define the task container based on status
-
-    // Determine the correct container based on the status
+    let taskContainer;
     if (status === "New") {
         taskContainer = document.getElementById("todo-tasks");
     } else if (status === "In Progress") {
@@ -101,17 +94,16 @@ function createTaskElement(taskId, taskText, status) {
         taskContainer = document.getElementById("completed-tasks");
     } else {
         console.error(`Unknown status "${status}" for task: ${taskId}`);
-        return; // Exit if the status is unknown
+        return;
     }
 
     let task = document.createElement("div");
     task.className = "task";
     task.textContent = taskText;
     task.id = taskId;
-    task.draggable = true; // Enable dragging
-    task.ondragstart = drag; // Set up drag event
+    task.draggable = true;
+    task.ondragstart = drag;
 
-    // Append the task to the correct container
     if (taskContainer) {
         taskContainer.appendChild(task);
     }
@@ -119,7 +111,7 @@ function createTaskElement(taskId, taskText, status) {
 
 // Update task status in database
 async function updateTaskStatus(taskId, status) {
-    let id = taskId.split("-")[1]; // Extract numeric ID
+    let id = taskId.split("-")[1];
     let { error } = await supabase.from("tasks").update({ status }).eq("id", id);
     if (error) {
         console.error("Error updating task:", error);
@@ -134,18 +126,15 @@ async function loadTasks() {
         return;
     }
 
-    // Clear existing tasks in each column before loading
     document.getElementById("todo-tasks").innerHTML = '';
     document.getElementById("inprogress-tasks").innerHTML = '';
     document.getElementById("completed-tasks").innerHTML = '';
 
     tasks.forEach(task => {
-        // Create task elements based on their status
         createTaskElement("task-" + task.id, task.text, task.status);
     });
     updateCounts();
 }
-
 
 // Update task counts
 function updateCounts() {
@@ -153,7 +142,6 @@ function updateCounts() {
     const inProgressTasksContainer = document.getElementById("inprogress-tasks");
     const completedTasksContainer = document.getElementById("completed-tasks");
 
-    // Ensure containers exist before accessing their children
     if (todoTasksContainer) {
         document.querySelector("#todo .column-header").textContent = `New (${todoTasksContainer.children.length})`;
     } else {
@@ -179,7 +167,7 @@ window.onclick = function(event) {
     if (event.target === modal) {
         closeModal();
     }
-}
+};
 
 // Load tasks on page load
 document.addEventListener("DOMContentLoaded", loadTasks);
