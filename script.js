@@ -1,25 +1,12 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import dotenv from "dotenv"; // Import dotenv package
 
-let supabase; // Declare supabase globally
+dotenv.config(); // Load environment variables
 
-// Fetch environment variables securely from Netlify function
-async function fetchEnvVars() {
-    try {
-        const response = await fetch('/.netlify/functions/env');
-        const env = await response.json();
+const SUPABASE_URL = "https://dnbgjzscuxrlbceqsrhz.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuYmdqenNjdXhybGJjZXFzcmh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI4NDU1MTksImV4cCI6MjA1ODQyMTUxOX0.ZJ496AtjazuXkppkpEy-DnChkUdsAme4DQXBC4sNTsg"; // Replace with your actual Anon Key
 
-        const SUPABASE_URL = env.SUPABASE_URL;
-        const SUPABASE_ANON_KEY = env.SUPABASE_ANON_KEY;
-
-        // Initialize Supabase only after fetching the keys
-        supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Now load tasks after Supabase is initialized
-        loadTasks();
-    } catch (error) {
-        console.error("Error fetching environment variables:", error);
-    }
-}
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Open modal
 window.openModal = function() {
@@ -47,19 +34,28 @@ window.drop = async function(event, status) {
     let taskId = event.dataTransfer.getData("text");
     let task = document.getElementById(taskId);
     
+    // Normalize status to match your container IDs
     let containerId;
     switch(status) {
-        case "New": containerId = "todo-tasks"; break;
-        case "In Progress": containerId = "inprogress-tasks"; break;
-        case "Completed": containerId = "completed-tasks"; break;
+        case "New":
+            containerId = "todo-tasks";
+            break;
+        case "In Progress":
+            containerId = "inprogress-tasks";
+            break;
+        case "Completed":
+            containerId = "completed-tasks";
+            break;
         default:
             console.error(`Unknown status: ${status}`);
             return;
     }
 
     console.log(`Dropping task into: ${status}`);
+    console.log(`Looking for container: ${containerId}`);
 
     const taskContainer = document.getElementById(containerId);
+    
     if (taskContainer) {
         taskContainer.appendChild(task);
         await updateTaskStatus(taskId, status);
@@ -69,6 +65,8 @@ window.drop = async function(event, status) {
     }
 }
 
+
+
 // Add new task dynamically
 window.addTask = async function() {
     let taskText = document.getElementById("taskInput").value.trim();
@@ -76,7 +74,7 @@ window.addTask = async function() {
 
     let { data, error } = await supabase
         .from("tasks")
-        .insert([{ text: taskText, status: "New" }])
+        .insert([{ text: taskText, status: "New" }]) // Default status is "New"
         .select("id");
 
     if (error) {
@@ -85,29 +83,38 @@ window.addTask = async function() {
     }
 
     let taskId = "task-" + data[0].id;
-    createTaskElement(taskId, taskText, "New");
+    createTaskElement(taskId, taskText, "New"); // Use "New" for initial status
     closeModal();
     updateCounts();
 }
 
 // Create and append task element
 function createTaskElement(taskId, taskText, status) {
-    let taskContainer = document.getElementById(status === "New" ? "todo-tasks" : 
-        status === "In Progress" ? "inprogress-tasks" : "completed-tasks");
+    let taskContainer; // Define the task container based on status
 
-    if (!taskContainer) {
+    // Determine the correct container based on the status
+    if (status === "New") {
+        taskContainer = document.getElementById("todo-tasks");
+    } else if (status === "In Progress") {
+        taskContainer = document.getElementById("inprogress-tasks");
+    } else if (status === "Completed") {
+        taskContainer = document.getElementById("completed-tasks");
+    } else {
         console.error(`Unknown status "${status}" for task: ${taskId}`);
-        return;
+        return; // Exit if the status is unknown
     }
 
     let task = document.createElement("div");
     task.className = "task";
     task.textContent = taskText;
     task.id = taskId;
-    task.draggable = true;
-    task.ondragstart = drag;
+    task.draggable = true; // Enable dragging
+    task.ondragstart = drag; // Set up drag event
 
-    taskContainer.appendChild(task);
+    // Append the task to the correct container
+    if (taskContainer) {
+        taskContainer.appendChild(task);
+    }
 }
 
 // Update task status in database
@@ -121,27 +128,24 @@ async function updateTaskStatus(taskId, status) {
 
 // Load tasks from database
 async function loadTasks() {
-    if (!supabase) {
-        console.error("Supabase is not initialized yet.");
-        return;
-    }
-
     let { data: tasks, error } = await supabase.from("tasks").select("*");
     if (error) {
         console.error("Error loading tasks:", error);
         return;
     }
 
+    // Clear existing tasks in each column before loading
     document.getElementById("todo-tasks").innerHTML = '';
     document.getElementById("inprogress-tasks").innerHTML = '';
     document.getElementById("completed-tasks").innerHTML = '';
 
     tasks.forEach(task => {
+        // Create task elements based on their status
         createTaskElement("task-" + task.id, task.text, task.status);
     });
-
     updateCounts();
 }
+
 
 // Update task counts
 function updateCounts() {
@@ -149,16 +153,23 @@ function updateCounts() {
     const inProgressTasksContainer = document.getElementById("inprogress-tasks");
     const completedTasksContainer = document.getElementById("completed-tasks");
 
+    // Ensure containers exist before accessing their children
     if (todoTasksContainer) {
         document.querySelector("#todo .column-header").textContent = `New (${todoTasksContainer.children.length})`;
+    } else {
+        console.error("Todo tasks container not found.");
     }
 
     if (inProgressTasksContainer) {
         document.querySelector("#in-progress .column-header").textContent = `In Progress (${inProgressTasksContainer.children.length})`;
+    } else {
+        console.error("In Progress tasks container not found.");
     }
 
     if (completedTasksContainer) {
         document.querySelector("#done .column-header").textContent = `Completed (${completedTasksContainer.children.length})`;
+    } else {
+        console.error("Completed tasks container not found.");
     }
 }
 
@@ -170,5 +181,5 @@ window.onclick = function(event) {
     }
 }
 
-// Fetch environment variables first, then load tasks
-fetchEnvVars();
+// Load tasks on page load
+document.addEventListener("DOMContentLoaded", loadTasks);
