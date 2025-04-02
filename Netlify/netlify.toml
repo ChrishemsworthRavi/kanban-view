@@ -1,0 +1,16 @@
+[build]
+  command = ""  # No build command for plain JS, update if needed (e.g., "npm run build")
+  publish = "public"  # Change this to your frontend directory (e.g., "dist" or "src")
+
+[functions]
+  directory = "netlify/functions"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[dev]
+  command = "npm start"  # Change if you have a local server setup
+  port = 8888
+  targetPort = 3000
