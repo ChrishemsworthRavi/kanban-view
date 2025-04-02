@@ -1,7 +1,10 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import dotenv from "dotenv"; // Import dotenv package
 
-const SUPABASE_URL = "https://dnbgjzscuxrlbceqsrhz.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuYmdqenNjdXhybGJjZXFzcmh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI4NDU1MTksImV4cCI6MjA1ODQyMTUxOX0.ZJ496AtjazuXkppkpEy-DnChkUdsAme4DQXBC4sNTsg"; // Replace with your actual Anon Key
+dotenv.config(); // Load environment variables
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
