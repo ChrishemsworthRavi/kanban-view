@@ -1,10 +1,8 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-import dotenv from "dotenv"; // Import dotenv package
 
-dotenv.config(); // Load environment variables
 
-const SUPABASE_URL = import.meta.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.SUPABASE_ANON_KEY;
+const SUPABASE_URL = SUPABASE_URL;
+const SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
