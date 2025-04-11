@@ -1,48 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kanban Board</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Optional: Link to your CSS file -->
-</head>
-<body>
-
-    <div class="header">
-        <h1>Kanban View</h1> <!-- Title for the Kanban board -->
-        <button onclick="openModal()">+ Add Task</button>
-    </div>
-
-    <div class="board">
-        <div class="column" id="todo">
-            <div class="column-header">New (0)</div>
-            <div class="tasks" id="todo-tasks" ondrop="drop(event, 'New')" ondragover="allowDrop(event)"></div>
-        </div>
-
-        <div class="column" id="in-progress">
-            <div class="column-header">In Progress (0)</div>
-            <div class="tasks" id="inprogress-tasks" ondrop="drop(event, 'In Progress')" ondragover="allowDrop(event)"></div>
-        </div>
-
-        <div class="column" id="done">
-            <div class="column-header">Completed (0)</div>
-            <div class="tasks" id="completed-tasks" ondrop="drop(event, 'Completed')" ondragover="allowDrop(event)"></div>
-        </div>
-    </div>
-
-    <!-- Task Input Modal -->
-    <div id="taskModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <h3>Add New Task</h3>
-            <input type="text" id="taskInput" placeholder="Enter task name...">
-            <div class="modal-buttons">
-                <button onclick="addTask()">Add</button>
-                <button onclick="closeModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-
-    <script type="module" src="script.js"></script> <!-- Your JavaScript file -->
-</body>
-</html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Kanban Board</title>
+     <link rel="stylesheet" href="styles.css"> <!-- Optional: Link to your CSS file -->
+ </head>
+ <body>
+ 
+     <div class="header">
+         <h1>Kanban View</h1> <!-- Title for the Kanban board -->
+         <button onclick="openModal()">+ Add Task</button>
+     </div>
+ 
+     <div class="board">
+         <div class="column" id="todo">
+             <div class="column-header">New (0)</div>
+             <div class="tasks" id="todo-tasks" ondrop="drop(event, 'New')" ondragover="allowDrop(event)"></div>
+         </div>
+ 
+         <div class="column" id="in-progress">
+             <div class="column-header">In Progress (0)</div>
+             <div class="tasks" id="inprogress-tasks" ondrop="drop(event, 'In Progress')" ondragover="allowDrop(event)"></div>
+         </div>
+ 
+         <div class="column" id="done">
+             <div class="column-header">Completed (0)</div>
+             <div class="tasks" id="completed-tasks" ondrop="drop(event, 'Completed')" ondragover="allowDrop(event)"></div>
+         </div>
+     </div>
+ 
+     <!-- Task Input Modal -->
+     <div id="taskModal" class="modal" style="display:none;">
+         <div class="modal-content">
+             <h3>Add New Task</h3>
+             <input type="text" id="taskInput" placeholder="Enter task name...">
+             <div class="modal-buttons">
+                 <button onclick="addTask()">Add</button>
+                 <button onclick="closeModal()">Cancel</button>
+             </div>
+         </div>
+     </div>
+ 
+     <script type="module" src="script.js"></script> <!-- Your JavaScript file -->
+ </body>
+ </html>
